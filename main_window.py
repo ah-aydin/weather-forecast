@@ -22,14 +22,15 @@ class Window(QMainWindow):
         self.display = QtWidgets.QWidget()
         self.setCentralWidget(self.display)
         self.setWindowIcon(QtGui.QIcon('weather icon.png'))
-        self.setGeometry(100, 100, 1600, 900)
+        self.move(100, 100)
         self.setWindowTitle('Weather Forecast')
         self.setFont(self._font)
 
     def initInput(self):
         self.searchBox = QtWidgets.QTextEdit('Type here')
         self.searchBox.setFont(QtGui.QFont('Aerial', 10))
-        self.searchBox.setFixedSize(400, 30)
+        self.searchBox.setFixedHeight(30)
+        self.searchBox.setMinimumWidth(400)
 
         button = QtWidgets.QPushButton('Search')
         button.setFixedSize(100, 30)
