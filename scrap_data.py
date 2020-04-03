@@ -9,12 +9,23 @@ def get_forecast_data(city_name):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763'}
 
     main_page = req.get('https://www.timeanddate.com/weather/results.html?query='+city_name, headers=headers)
+    try:
+        main_page.raise_for_status()
+    except:
+        return None
     s_main_page = BeautifulSoup(main_page.text, features='html.parser')
-    href_forecast_page = s_main_page.find('td', {'class': 'sep-thick'}).find('a')['href']
+    try:
+        href_forecast_page = s_main_page.find('td', {'class': 'sep-thick'}).find('a')['href']
+    except:
+        return None
     del main_page, s_main_page
 
 
     forecast_page = req.get('https://www.timeanddate.com'+href_forecast_page+'/ext', headers=headers)
+    try:
+        forecast_page.raise_for_status()
+    except:
+        return None
     s_forecast_page = BeautifulSoup(forecast_page.text, features='html.parser')
     forecast_table = s_forecast_page.find('table', {'id': 'wt-ext'}).find('tbody').find_all('tr')
     del forecast_page, s_forecast_page
