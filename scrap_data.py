@@ -12,12 +12,12 @@ def get_forecast_data(city_name):
     try:
         main_page.raise_for_status()
     except:
-        return None
+        return None, None, None
     s_main_page = BeautifulSoup(main_page.text, features='html.parser')
     try:
         href_forecast_page = s_main_page.find('td', {'class': 'sep-thick'}).find('a')['href']
     except:
-        return None
+        return None, None, None
     del main_page, s_main_page
 
 
@@ -25,10 +25,18 @@ def get_forecast_data(city_name):
     try:
         forecast_page.raise_for_status()
     except:
-        return None
+        return None, None, None
     s_forecast_page = BeautifulSoup(forecast_page.text, features='html.parser')
     forecast_table = s_forecast_page.find('table', {'id': 'wt-ext'}).find('tbody').find_all('tr')
-    del forecast_page, s_forecast_page
+
+    # Get the flag of the nation and the name of the city
+    title_header = s_forecast_page.find('header', {'class': 'pg-title'})
+    image_flag_src = title_header.find('img')['src']
+    image_flag_location = req.get('https:'+image_flag_src, headers=headers)
+    image_flag = Image.open(BytesIO(image_flag_location.content))
+    city_name = title_header.find('h1').text
+
+    del forecast_page, s_forecast_page, title_header
 
     forecastDays = []
     for day in forecast_table:
@@ -68,4 +76,4 @@ def get_forecast_data(city_name):
 
     del forecast_table
 
-    return forecastDays
+    return forecastDays, image_flag, city_name
