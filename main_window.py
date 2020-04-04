@@ -8,7 +8,7 @@ class Window(QMainWindow):
     
     style = """
         QMainWindow{
-            background-color: #182C41;
+            background-color: #D3D3D3;
             border: 2px #0A0A0A
         }
     """
@@ -48,14 +48,14 @@ class Window(QMainWindow):
         self.searchBox.setFont(QtGui.QFont('Aerial', 10))
         self.searchBox.setFixedHeight(30)
         self.searchBox.setMinimumWidth(400)
-        self.searchBox.setStyleSheet('QLineEdit{background-color:#3E6B9D}')
+        self.searchBox.setStyleSheet('QLineEdit{background-color:#FAFAFA}')
         self.searchBox.returnPressed.connect(self.loadData)
 
         button = QtWidgets.QPushButton('Search')
         button.setFixedSize(100, 30)
         button.setFont(self._font)
         button.clicked.connect(self.loadData)
-        button.setStyleSheet('QPushButton{background-color:#3E6B9D}')
+        button.setStyleSheet('QPushButton{background-color:#FAFAFA}')
 
         self.layout_search = QtWidgets.QHBoxLayout()
         self.layout_search.addWidget(self.searchBox)
@@ -74,6 +74,7 @@ class Window(QMainWindow):
 
     def initOutput(self):
         self.outputLayout = QtWidgets.QGridLayout()
+
         self.labelGroups = []
         for i in range(1, 15):
 
