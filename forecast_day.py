@@ -1,11 +1,11 @@
 class ForecastDay():
     def __init__(self, day_of_the_week, day_of_the_month, month, image, temperature, weather, feels_like, wind, humidity, p_chance, p_ammount, UV, sunrise, sunset):
-        self.day_of_the_week = day_of_the_week
+        self.day_of_the_week = day_of_the_week[0].upper() + day_of_the_week[1:]
         self.day_of_the_month = day_of_the_month
         self.month = month
         self.image = image
         self.temperature = temperature
-        self.weather = weather
+        self.weather = ' ' + weather
         self.feels_like = feels_like
         self.wind = wind
         self.humidity = humidity
