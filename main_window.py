@@ -1,5 +1,6 @@
 import PyQt5
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QDialog, QMessageBox
 from PIL.ImageQt import ImageQt
 import scrap_data
@@ -44,6 +45,11 @@ class Window(QMainWindow):
         self.setStyleSheet(self.style)
 
     def initInput(self):
+        
+        label = QtWidgets.QLabel('City: ')
+        label.setFont(self.normalFont)
+        label.setFixedWidth(40)
+
         self.searchBox = QtWidgets.QLineEdit('Type here')
         self.searchBox.setFont(QtGui.QFont('Aerial', 10))
         self.searchBox.setFixedHeight(30)
@@ -58,6 +64,7 @@ class Window(QMainWindow):
         button.setStyleSheet('QPushButton{background-color:#FAFAFA}')
 
         self.layout_search = QtWidgets.QHBoxLayout()
+        self.layout_search.addWidget(label)
         self.layout_search.addWidget(self.searchBox)
         self.layout_search.addWidget(button)
     
@@ -73,200 +80,154 @@ class Window(QMainWindow):
         self.layout_info.addWidget(self.lb_countryName)
 
     def initOutput(self):
-        self.outputLayout = QtWidgets.QGridLayout()
+        self.outputLayout = QtWidgets.QFormLayout()
+
+        hspacer = QtWidgets.QLabel()
+        hspacer.setFixedSize(40, 10)
+        hspacer.setStyleSheet('background-color: #FF00FF')
 
         self.labelGroups = []
         for i in range(1, 15):
-
             labelGroup = []
-            vspacer = QtWidgets.QLabel()
-            vspacer.setFixedHeight(6)
-            hspacer = QtWidgets.QLabel()
-            hspacer.setFixedWidth(10)
 
-            ############################
+            #########################
             ### DAY LAYOUT
-            ############################
-            dayLayout = QtWidgets.QVBoxLayout()
-            dayLayout.addWidget(vspacer)
-
-            daySubLayout = QtWidgets.QGridLayout()
-            daySubLayout.addWidget(hspacer, 0, 0)
-            daySubLayout.addWidget(hspacer, 1, 0)
-
+            #########################
             label_weekDay = QtWidgets.QLabel()
+            label_weekDay.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             label_weekDay.setFont(self.smallFont)
-            label_weekDay.setMaximumWidth(60)
+            label_weekDay.setStyleSheet('background-color: #00FF00')
             labelGroup.append(label_weekDay)
-            daySubLayout.addWidget(label_weekDay, 0, 1)
 
             label_month = QtWidgets.QLabel()
+            label_month.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             label_month.setFont(self.normalFontBold)
-            label_month.setMaximumWidth(60)
+            label_month.setStyleSheet('background-color: #00AA00')
+            label_month.setFixedWidth(70)
             labelGroup.append(label_month)
-            daySubLayout.addWidget(label_month, 1, 1)
-            daySubLayout.addWidget(hspacer)
-            
-            dayLayout.addLayout(daySubLayout)
-            dayLayout.addWidget(vspacer)
-            
-            self.outputLayout.addLayout(dayLayout, i, 0)
 
-            ############################
-            ### CONDITIONS LAYOUT
-            ############################
-            conditionsLayout = QtWidgets.QVBoxLayout()
-            conditionsLayout.addWidget(vspacer)
+            dayLayout = QtWidgets.QVBoxLayout()
+            dayLayout.addWidget(label_weekDay)
+            dayLayout.addWidget(label_month)
 
-            conditionsSubLayout = QtWidgets.QHBoxLayout()
-            conditionsSubLayout.addWidget(hspacer)
-
+            #########################
+            ### CONDITIONS LABELS
+            #########################
             img_weather = QtWidgets.QLabel()
             img_weather.setFixedSize(40, 40)
             labelGroup.append(img_weather)
-            conditionsSubLayout.addWidget(img_weather)
-
-            spacer1 = QtWidgets.QLabel()
-            spacer1.setFixedWidth(20)
-            conditionsSubLayout.addWidget(spacer1)
 
             label_temperature = QtWidgets.QLabel()
-            label_temperature.setMaximumWidth(90)
+            label_temperature.setAlignment(Qt.AlignCenter)
             label_temperature.setFont(self.normalFont)
+            label_temperature.setStyleSheet('background-color:#FF0000')
+            label_temperature.setFixedWidth(80)
             labelGroup.append(label_temperature)
-            conditionsSubLayout.addWidget(label_temperature)
-
-            spacer2 = QtWidgets.QLabel()
-            spacer2.setFixedWidth(30)
-            conditionsSubLayout.addWidget(spacer2)
-
+            
             label_weather = QtWidgets.QLabel()
+            label_weather.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
             label_weather.setFont(self.normalFont)
-            label_weather.setMaximumWidth(170)
+            label_weather.setStyleSheet('background-color:#BB0000')
+            label_weather.setFixedWidth(280)
             labelGroup.append(label_weather)
-            conditionsSubLayout.addWidget(label_weather)
 
-            conditionsLayout.addLayout(conditionsSubLayout)
-            conditionsLayout.addWidget(vspacer)
-
-            self.outputLayout.addLayout(conditionsLayout, i, 1)
-
-            ############################
-            ### COMFORT LAYOUT
-            ############################
-            comfortLayout = QtWidgets.QVBoxLayout()
-            comfortLayout.addWidget(vspacer)
-
-            comfortSubLayout = QtWidgets.QHBoxLayout()
-            comfortSubLayout.addWidget(hspacer)
-
+            #########################
+            ### CONDITIONS LABELS
+            #########################
             label_feelsLike = QtWidgets.QLabel()
-            label_feelsLike.setMaximumWidth(50)
+            label_feelsLike.setAlignment(Qt.AlignCenter)
             label_feelsLike.setFont(self.normalFont)
+            label_feelsLike.setStyleSheet('background-color:#0000FF')
+            label_feelsLike.setFixedWidth(80)
             labelGroup.append(label_feelsLike)
-            comfortSubLayout.addWidget(label_feelsLike)
-
-            spacer1 = QtWidgets.QLabel()
-            spacer1.setFixedWidth(20)
-            comfortSubLayout.addWidget(spacer1)
 
             label_wind = QtWidgets.QLabel()
-            label_wind.setMaximumWidth(90)
+            label_wind.setAlignment(Qt.AlignCenter)
             label_wind.setFont(self.normalFont)
+            label_wind.setStyleSheet('background-color:#0000AA')
+            label_wind.setFixedWidth(80)
             labelGroup.append(label_wind)
-            comfortSubLayout.addWidget(label_wind)
-
-            spacer2 = QtWidgets.QLabel()
-            spacer2.setFixedWidth(30)
-            comfortSubLayout.addWidget(spacer2)
 
             label_humidity = QtWidgets.QLabel()
+            label_humidity.setAlignment(Qt.AlignCenter)
             label_humidity.setFont(self.normalFont)
-            label_humidity.setMaximumWidth(70)
+            label_humidity.setStyleSheet('background-color:#000088')
+            label_humidity.setFixedWidth(80)
             labelGroup.append(label_humidity)
-            comfortSubLayout.addWidget(label_humidity)
 
-            comfortLayout.addLayout(comfortSubLayout)
-            comfortLayout.addWidget(vspacer)
-            self.outputLayout.addLayout(comfortLayout, i, 2)
-
-            ############################
-            ### PRECIPITATION LAYOUT
-            ############################
-            precipitationLayout = QtWidgets.QVBoxLayout()
-            precipitationLayout.addWidget(vspacer)
-
-            precipitationSubLayout = QtWidgets.QHBoxLayout()
-            precipitationSubLayout.addWidget(hspacer)
-
+            #########################
+            ### PRECIPITATION LABELS
+            #########################
             label_chance = QtWidgets.QLabel()
-            label_chance.setMaximumWidth(50)
+            label_chance.setAlignment(Qt.AlignCenter)
             label_chance.setFont(self.normalFont)
+            label_chance.setStyleSheet('background-color:#FFFF33')
+            label_chance.setFixedWidth(80)
             labelGroup.append(label_chance)
-            precipitationSubLayout.addWidget(label_chance)
-
-            spacer1 = QtWidgets.QLabel()
-            spacer1.setFixedWidth(20)
-            precipitationSubLayout.addWidget(spacer1)
 
             label_amount = QtWidgets.QLabel()
-            label_amount.setMaximumWidth(90)
+            label_amount.setAlignment(Qt.AlignCenter)
             label_amount.setFont(self.normalFont)
+            label_amount.setStyleSheet('background-color:#FFFF00')
+            label_amount.setFixedWidth(110)
             labelGroup.append(label_amount)
-            precipitationSubLayout.addWidget(label_amount)
 
-            precipitationLayout.addLayout(precipitationSubLayout)
-            precipitationLayout.addWidget(vspacer)
-            self.outputLayout.addLayout(precipitationLayout, i, 3)
-
-            ############################
-            ### SUN LAYOUT
-            ############################
-            sunLayout = QtWidgets.QVBoxLayout()
-            sunLayout.addWidget(vspacer)
-
-            sunSubLayout = QtWidgets.QHBoxLayout()
-            sunSubLayout.addWidget(hspacer)
-
+            #########################
+            ### SUN WIDGETS
+            #########################
             label_UV = QtWidgets.QLabel()
-            label_UV.setMaximumWidth(100)
+            label_UV.setAlignment(Qt.AlignCenter)
             label_UV.setFont(self.normalFont)
+            label_UV.setStyleSheet('background-color:#9400D3')
+            label_UV.setFixedWidth(160)
             labelGroup.append(label_UV)
-            sunSubLayout.addWidget(label_UV)
-
-            spacer1 = QtWidgets.QLabel()
-            spacer1.setFixedWidth(20)
-            sunSubLayout.addWidget(spacer1)
 
             label_sunrise = QtWidgets.QLabel()
-            label_sunrise.setMaximumWidth(70)
+            label_sunrise.setAlignment(Qt.AlignCenter)
             label_sunrise.setFont(self.normalFont)
+            label_sunrise.setStyleSheet('background-color:#8B008B')
+            label_sunrise.setFixedWidth(80)
             labelGroup.append(label_sunrise)
-            sunSubLayout.addWidget(label_sunrise)
-
-            spacer2 = QtWidgets.QLabel()
-            spacer2.setFixedWidth(30)
-            sunSubLayout.addWidget(spacer2)
 
             label_sunset = QtWidgets.QLabel()
+            label_sunset.setAlignment(Qt.AlignCenter)
             label_sunset.setFont(self.normalFont)
-            label_sunset.setMaximumWidth(70)
+            label_sunset.setStyleSheet('background-color:#4B0082')
+            label_sunset.setFixedWidth(80)
             labelGroup.append(label_sunset)
-            sunSubLayout.addWidget(label_sunset)
 
-            sunLayout.addLayout(sunSubLayout)
-            sunLayout.addWidget(vspacer)
-            self.outputLayout.addLayout(sunLayout, i, 4)
+            #########################
+            ### ROW LAYOUT
+            #########################
+            rowLayout = QtWidgets.QHBoxLayout()
+            rowLayout.addLayout(dayLayout)
+            for index in range(2, len(labelGroup)):
+                rowLayout.addWidget(labelGroup[index])
+            self.outputLayout.addRow(rowLayout)
 
             self.labelGroups.append(labelGroup)
 
-    
+
+    """def initOutput(self):
+            ############################
+            ### SUN LAYOUT
+            ############################
+
+            self.labelGroups.append(labelGroup)
+"""
+
     def initWindowLayout(self):
         self._layout = QtWidgets.QVBoxLayout()
         
         self._layout.addLayout(self.layout_search)
         self._layout.addLayout(self.layout_info)
-        self._layout.addLayout(self.outputLayout)
+
+        groupBox = QtWidgets.QGroupBox()
+        groupBox.setLayout(self.outputLayout)
+        scrollArea = QtWidgets.QScrollArea()
+        scrollArea.setWidget(groupBox)
+        scrollArea.setWidgetResizable(True)
+        self._layout.addWidget(scrollArea)
 
         self.display.setLayout(self._layout)
 
@@ -297,6 +258,6 @@ class Window(QMainWindow):
             labelGroup[10].setText(day.UV)
             labelGroup[11].setText(day.sunrise)
             labelGroup[12].setText(day.sunset)
-
+        print(self.labelGroups[10][4].size())
         self.lb_countryFlag.setPixmap(QtGui.QPixmap(QtGui.QImage(ImageQt(img_flag))))
         self.lb_countryName.setText(city_name)
