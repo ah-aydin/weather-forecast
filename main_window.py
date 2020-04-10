@@ -1,14 +1,14 @@
 import PyQt5
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QDialog, QMessageBox, QScrollArea
 from PIL.ImageQt import ImageQt
 import scrap_data
 
-class Window(QMainWindow):
+class Window(QScrollArea):
     
     style = """
-        QMainWindow{
+        QScrollArea{
             background-color: #FFFFFF;
             border: 2px #0A0A0A
         }
@@ -32,8 +32,8 @@ class Window(QMainWindow):
         self._font = QtGui.QFont('Times New Roman', 16)
         self._font.setBold(True)
 
-        self.display = QtWidgets.QWidget()
-        self.setCentralWidget(self.display)
+        #self.display = QtWidgets.QWidget()
+        #self.setCentralWidget(self.display)
         self.setWindowIcon(QtGui.QIcon('weather icon.png'))
         self.move(100, 100)
         self.setWindowTitle('Weather Forecast')
@@ -79,7 +79,53 @@ class Window(QMainWindow):
         self.outputLayout = QtWidgets.QHBoxLayout()
 
         self.labelGroups = []
-        for i in range(7):
+
+        self.currentDayLayout = QtWidgets.QVBoxLayout()
+
+        labelDate = QtWidgets.QLabel()
+        labelDate.setFont(QtGui.QFont("Aerial", 17))
+        labelDate.setMinimumWidth(200)
+        labelDate.setFixedHeight(30)
+        labelDate.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        labelWeather = QtWidgets.QLabel()
+        labelWeather.setFont(QtGui.QFont("Aerial", 16))
+        labelWeather.setMinimumWidth(800)
+        labelWeather.setFixedHeight(24)
+        labelWeather.setWordWrap(True)
+        labelWeather.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        dateLayout = QtWidgets.QVBoxLayout()
+        dateLayout.addWidget(labelDate)
+        dateLayout.setAlignment(labelDate, Qt.AlignTop | Qt.AlignLeft)
+        dateLayout.addWidget(labelWeather)
+        dateLayout.setAlignment(labelWeather, Qt.AlignTop | Qt.AlignLeft)
+
+        labelImage = QtWidgets.QLabel()
+        labelImage.setFixedSize(80, 80)
+        
+        labelTemperature = QtWidgets.QLabel()
+        labelTemperature.setFont(QtGui.QFont("Aerial", 20))
+        labelTemperature.setMinimumWidth(50)
+        labelTemperature.setFixedHeight(40)
+        labelTemperature.setAlignment(Qt.AlignCenter)
+
+        weatherLayout = QtWidgets.QHBoxLayout()
+        weatherLayout.addWidget(labelImage)
+        weatherLayout.setAlignment(labelImage, Qt.AlignLeft | Qt.AlignHCenter)
+        weatherLayout.addWidget(labelTemperature)
+        weatherLayout.setAlignment(labelTemperature, Qt.AlignLeft | Qt.AlignHCenter)
+
+        self.currentDayLayout.addLayout(dateLayout)
+        self.currentDayLayout.setAlignment(dateLayout, Qt.AlignTop | Qt.AlignLeft)
+        self.currentDayLayout.addLayout(weatherLayout)
+        self.currentDayLayout.setAlignment(weatherLayout, Qt.AlignTop | Qt.AlignLeft)
+
+        self.labelGroups.append([labelDate, labelWeather, labelImage, labelTemperature])
+
+
+
+        for i in range(13):
             
             labelGroup = []
 
@@ -101,12 +147,12 @@ class Window(QMainWindow):
 
             labelImage = QtWidgets.QLabel()
             labelImage.setFixedSize(40, 40)
-            labelImage.setStyleSheet('background-color:#00868B')
             
             labelTemperature = QtWidgets.QLabel()
             font = QtGui.QFont("Aerial", 18)
             labelTemperature.setFont(font)
             labelWeather.setAlignment(Qt.AlignCenter)
+            labelWeather.setWordWrap(True)
             labelWeather.setMinimumWidth(200)
             labelWeather.setFixedHeight(30)
 
@@ -134,10 +180,16 @@ class Window(QMainWindow):
             self.outputLayout.addWidget(weatherGroupBox)
             
     def initWindowLayout(self):
-        self._layout = QtWidgets.QVBoxLayout()
+        self._layout = QtWidgets.QFormLayout()
         
-        self._layout.addLayout(self.layout_search)
-        self._layout.addLayout(self.layout_info)
+        self._layout.addRow(self.layout_search)
+        self._layout.addRow(self.layout_info)
+
+        groupBox = QtWidgets.QGroupBox()
+        groupBox.setLayout(self.currentDayLayout)
+        groupBox.setStyleSheet('background-color:#00868B')
+        groupBox.setFixedHeight(200)
+        self._layout.addRow(groupBox)
 
         groupBox = QtWidgets.QGroupBox()
         self.outputLayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
@@ -145,16 +197,15 @@ class Window(QMainWindow):
         self.scrollArea = QtWidgets.QScrollArea()
         self.scrollArea.setWidget(groupBox)
         self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setMaximumWidth(1600)
-        self.scrollArea.setMaximumHeight(500)
+        self.scrollArea.setFixedHeight(550)
         self.scrollArea.hide()
-        self._layout.addWidget(self.scrollArea)
+        self._layout.addRow(self.scrollArea)
+        self._layout.setSpacing(0)
 
-        self.display.setLayout(self._layout)
+        self.setLayout(self._layout)
 
     def loadData(self):
         forecast, img_flag, city_name = scrap_data.get_forecast_data(self.searchBox.text())
-        city_name = city_name.replace("14", "7")
         if forecast == None:
             mb = QMessageBox()
             mb.setIcon(QMessageBox.Critical)
@@ -163,8 +214,13 @@ class Window(QMainWindow):
             mb.setStandardButtons(QMessageBox.Ok)
             mb.exec_()
             return
-            
-        for i in range(7):
+        
+        self.labelGroups[0][0].setText(forecast[0].day_of_the_week)
+        self.labelGroups[0][1].setText(forecast[0].weather)
+        self.labelGroups[0][2].setPixmap(QtGui.QPixmap(QtGui.QImage(ImageQt(forecast[0].image))).scaled(80, 80, Qt.KeepAspectRatio))
+        self.labelGroups[0][3].setText(forecast[0].temperature)
+
+        for i in range(1, 14):
             day = forecast[i]
             labelGroup = self.labelGroups[i]
             labelGroup[0].setText(day.day_of_the_week)
@@ -178,4 +234,3 @@ class Window(QMainWindow):
         if not self.adjusted:
             self.adjustSize()
             self.adjusted = True
-        print(self.scrollArea.size())
