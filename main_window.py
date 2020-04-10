@@ -51,12 +51,12 @@ class Window(QScrollArea):
         self.searchBox.setFixedHeight(30)
         self.searchBox.setMinimumWidth(400)
         self.searchBox.setStyleSheet('QLineEdit{background-color:#FAFAFA}')
-        self.searchBox.returnPressed.connect(self.loadData)
+        self.searchBox.returnPressed.connect(lambda: self.loadData(self.searchBox.text()))
 
         button = QtWidgets.QPushButton('Search')
         button.setFixedSize(100, 30)
         button.setFont(QtGui.QFont('Aerial', 15))
-        button.clicked.connect(self.loadData)
+        button.clicked.connect(lambda: self.loadData(self.searchBox.text()))
         button.setStyleSheet('QPushButton{background-color:#FAFAFA}')
 
         self.layout_search = QtWidgets.QHBoxLayout()
@@ -79,51 +79,7 @@ class Window(QScrollArea):
         self.outputLayout = QtWidgets.QHBoxLayout()
 
         self.labelGroups = []
-
-        self.currentDayLayout = QtWidgets.QVBoxLayout()
-
-        labelDate = QtWidgets.QLabel()
-        labelDate.setFont(QtGui.QFont("Aerial", 17))
-        labelDate.setMinimumWidth(200)
-        labelDate.setFixedHeight(30)
-        labelDate.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-        labelWeather = QtWidgets.QLabel()
-        labelWeather.setFont(QtGui.QFont("Aerial", 16))
-        labelWeather.setMinimumWidth(800)
-        labelWeather.setFixedHeight(24)
-        labelWeather.setWordWrap(True)
-        labelWeather.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-        dateLayout = QtWidgets.QVBoxLayout()
-        dateLayout.addWidget(labelDate)
-        dateLayout.setAlignment(labelDate, Qt.AlignTop | Qt.AlignLeft)
-        dateLayout.addWidget(labelWeather)
-        dateLayout.setAlignment(labelWeather, Qt.AlignTop | Qt.AlignLeft)
-
-        labelImage = QtWidgets.QLabel()
-        labelImage.setFixedSize(80, 80)
-        
-        labelTemperature = QtWidgets.QLabel()
-        labelTemperature.setFont(QtGui.QFont("Aerial", 20))
-        labelTemperature.setMinimumWidth(50)
-        labelTemperature.setFixedHeight(40)
-        labelTemperature.setAlignment(Qt.AlignCenter)
-
-        weatherLayout = QtWidgets.QHBoxLayout()
-        weatherLayout.addWidget(labelImage)
-        weatherLayout.setAlignment(labelImage, Qt.AlignLeft | Qt.AlignHCenter)
-        weatherLayout.addWidget(labelTemperature)
-        weatherLayout.setAlignment(labelTemperature, Qt.AlignLeft | Qt.AlignHCenter)
-
-        self.currentDayLayout.addLayout(dateLayout)
-        self.currentDayLayout.setAlignment(dateLayout, Qt.AlignTop | Qt.AlignLeft)
-        self.currentDayLayout.addLayout(weatherLayout)
-        self.currentDayLayout.setAlignment(weatherLayout, Qt.AlignTop | Qt.AlignLeft)
-
-        self.labelGroups.append([labelDate, labelWeather, labelImage, labelTemperature])
-
-
+        self.initCurrentOutput()
 
         for i in range(13):
             
@@ -178,7 +134,77 @@ class Window(QScrollArea):
             weatherGroupBox.setLayout(weatherLayout)
             weatherGroupBox.setStyleSheet('background-color:#00868B')
             self.outputLayout.addWidget(weatherGroupBox)
-            
+
+    def initCurrentOutput(self):
+        self.currentDayLayout = QtWidgets.QVBoxLayout()
+
+        labelDate = QtWidgets.QLabel()
+        labelDate.setFont(QtGui.QFont("Aerial", 17))
+        labelDate.setMinimumWidth(200)
+        labelDate.setFixedHeight(30)
+        labelDate.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        labelWeather = QtWidgets.QLabel()
+        labelWeather.setFont(QtGui.QFont("Aerial", 16))
+        labelWeather.setMinimumWidth(800)
+        labelWeather.setFixedHeight(30)
+        labelWeather.setWordWrap(True)
+        labelWeather.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        dateLayout = QtWidgets.QVBoxLayout()
+        dateLayout.addWidget(labelDate)
+        dateLayout.setAlignment(labelDate, Qt.AlignTop | Qt.AlignLeft)
+        dateLayout.addWidget(labelWeather)
+        dateLayout.setAlignment(labelWeather, Qt.AlignTop | Qt.AlignLeft)
+
+        labelImage = QtWidgets.QLabel()
+        labelImage.setFixedSize(80, 80)
+        
+        labelTemperature = QtWidgets.QLabel()
+        labelTemperature.setFont(QtGui.QFont("Aerial", 20))
+        labelTemperature.setMinimumWidth(50)
+        labelTemperature.setFixedHeight(40)
+        labelTemperature.setAlignment(Qt.AlignCenter)
+
+        labelPrecipitation = QtWidgets.QLabel()
+        labelPrecipitation.setFont(QtGui.QFont("Aerial", 16))
+        labelPrecipitation.setFixedHeight(24)
+        labelPrecipitation.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        labelHumidity = QtWidgets.QLabel()
+        labelHumidity.setFont(QtGui.QFont("Aerial", 16))
+        labelHumidity.setFixedHeight(24)
+        labelHumidity.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        
+        labelWind = QtWidgets.QLabel()
+        labelWind.setFont(QtGui.QFont("Aerial", 16))
+        labelWind.setFixedHeight(24)
+        labelWind.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        subLayout = QtWidgets.QVBoxLayout()
+        subLayout.addWidget(labelPrecipitation)
+        subLayout.setAlignment(labelPrecipitation, Qt.AlignLeft | Qt.AlignVCenter)
+        subLayout.addWidget(labelHumidity)
+        subLayout.setAlignment(labelHumidity, Qt.AlignLeft | Qt.AlignVCenter)
+        subLayout.addWidget(labelWind)
+        subLayout.setAlignment(labelWind, Qt.AlignLeft | Qt.AlignVCenter)
+
+        weatherLayout = QtWidgets.QHBoxLayout()
+        weatherLayout.addWidget(labelImage)
+        weatherLayout.setAlignment(labelImage, Qt.AlignLeft | Qt.AlignHCenter)
+        weatherLayout.addWidget(labelTemperature)
+        weatherLayout.setAlignment(labelTemperature, Qt.AlignLeft | Qt.AlignHCenter)
+        weatherLayout.addSpacerItem(QtWidgets.QSpacerItem(300, 1))
+        weatherLayout.addLayout(subLayout)
+        weatherLayout.setAlignment(subLayout, Qt.AlignRight)
+
+        self.currentDayLayout.addLayout(dateLayout)
+        self.currentDayLayout.setAlignment(dateLayout, Qt.AlignTop | Qt.AlignLeft)
+        self.currentDayLayout.addLayout(weatherLayout)
+        self.currentDayLayout.setAlignment(weatherLayout, Qt.AlignTop | Qt.AlignLeft)
+
+        self.labelGroups.append([labelDate, labelWeather, labelImage, labelTemperature, labelPrecipitation, labelHumidity, labelWind])
+
     def initWindowLayout(self):
         self._layout = QtWidgets.QFormLayout()
         
@@ -200,12 +226,13 @@ class Window(QScrollArea):
         self.scrollArea.setFixedHeight(550)
         self.scrollArea.hide()
         self._layout.addRow(self.scrollArea)
-        self._layout.setSpacing(0)
+        self._layout.setSpacing(5)
 
         self.setLayout(self._layout)
+        self.loadData("Bucharest")
 
-    def loadData(self):
-        forecast, img_flag, city_name = scrap_data.get_forecast_data(self.searchBox.text())
+    def loadData(self, city):
+        forecast, img_flag, city_name = scrap_data.get_forecast_data(city)
         if forecast == None:
             mb = QMessageBox()
             mb.setIcon(QMessageBox.Critical)
@@ -216,9 +243,12 @@ class Window(QScrollArea):
             return
         
         self.labelGroups[0][0].setText(forecast[0].day_of_the_week)
-        self.labelGroups[0][1].setText(forecast[0].weather)
+        self.labelGroups[0][1].setText(forecast[0].weather[0] + forecast[0].weather[1:].lower())
         self.labelGroups[0][2].setPixmap(QtGui.QPixmap(QtGui.QImage(ImageQt(forecast[0].image))).scaled(80, 80, Qt.KeepAspectRatio))
         self.labelGroups[0][3].setText(forecast[0].temperature)
+        self.labelGroups[0][4].setText("Precipitation: " + forecast[0].p_chance)
+        self.labelGroups[0][5].setText("Humidity: " + forecast[0].humidity)
+        self.labelGroups[0][6].setText("Wind: " + forecast[0].wind)
 
         for i in range(1, 14):
             day = forecast[i]
