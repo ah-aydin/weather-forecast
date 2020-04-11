@@ -114,8 +114,19 @@ class Window(QScrollArea):
             font = QtGui.QFont("Aerial", 12)
             labelPrecipitation.setFont(font)
             labelPrecipitation.setAlignment(Qt.AlignCenter)
-            labelPrecipitation.setMinimumWidth(200)
+            labelPrecipitation.setMinimumWidth(40)
             labelPrecipitation.setFixedHeight(30)
+            
+            precipitationImage = QtWidgets.QLabel()
+            precipitationImage.setFixedSize(30, 30)
+            precipitationImage.setPixmap(QtGui.QPixmap('precipitation icon.png').scaled(30, 30, Qt.KeepAspectRatio))
+
+            precipitationLayout = QtWidgets.QHBoxLayout()
+            precipitationLayout.addSpacerItem(QtWidgets.QSpacerItem(53, 1))
+            precipitationLayout.addWidget(precipitationImage)
+            precipitationLayout.setAlignment(precipitationImage, Qt.AlignCenter)
+            precipitationLayout.addWidget(labelPrecipitation)
+            precipitationLayout.addWidget(labelPrecipitation, Qt.AlignCenter)
 
             weatherLayout.addWidget(labelDate)
             weatherLayout.addWidget(labelWeather)
@@ -123,7 +134,8 @@ class Window(QScrollArea):
             weatherLayout.addWidget(labelImage)
             weatherLayout.addSpacerItem(QtWidgets.QSpacerItem(1, 20))
             weatherLayout.addWidget(labelTemperature)
-            weatherLayout.addWidget(labelPrecipitation)
+            weatherLayout.addLayout(precipitationLayout)
+            weatherLayout.setAlignment(precipitationLayout, Qt.AlignHCenter)
 
             labelGroup.append(labelDate)
             labelGroup.append(labelWeather)
@@ -131,7 +143,7 @@ class Window(QScrollArea):
             labelGroup.append(labelTemperature)
             labelGroup.append(labelPrecipitation)
 
-            for label in labelGroup:
+            for label in labelGroup[:-1]:
                 weatherLayout.setAlignment(label, Qt.AlignHCenter)
             weatherLayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
             weatherLayout.setSpacing(2)
@@ -239,6 +251,8 @@ class Window(QScrollArea):
 
         self.setLayout(self.mainLayout)
         self.loadData("Bucharest")
+        self.setFixedHeight(self.size().height())
+        self.setFixedWidth(self.size().height() * 16 // 9)
 
     def loadData(self, city):
         forecast, img_flag, city_name = scrap_data.get_forecast_data(city)
