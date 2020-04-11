@@ -217,11 +217,11 @@ class Window(QScrollArea):
         self.labelGroups.append([labelDate, labelWeather, labelImage, labelTemperature, labelPrecipitation, labelHumidity, labelWind])
 
     def initWindowLayout(self):
-        self._layout = QtWidgets.QFormLayout()
+        self.topLayout = QtWidgets.QFormLayout()
         
-        self._layout.addRow(self.layout_search)
-        self._layout.addRow(self.layout_info)
-        self._layout.addRow(self.currentDayGroupBox)
+        self.topLayout.addRow(self.layout_search)
+        self.topLayout.addRow(self.layout_info)
+        self.topLayout.addRow(self.currentDayGroupBox)
 
         groupBox = QtWidgets.QGroupBox()
         self.outputLayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
@@ -231,10 +231,13 @@ class Window(QScrollArea):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setFixedHeight(275)
         self.scrollArea.hide()
-        self._layout.addRow(self.scrollArea)
-        self._layout.setSpacing(5)
+        self.topLayout.addRow(self.scrollArea)
+        self.topLayout.setSpacing(5)
 
-        self.setLayout(self._layout)
+        self.mainLayout = QtWidgets.QVBoxLayout()
+        self.mainLayout.addLayout(self.topLayout)
+
+        self.setLayout(self.mainLayout)
         self.loadData("Bucharest")
 
     def loadData(self, city):
